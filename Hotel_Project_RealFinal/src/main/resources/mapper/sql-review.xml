@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hotel.mapper.ReviewMapper">
+
+	<!-- 검색 조건과 일치하는 게시물 개수를 조회 -->
+	<select id="selectReviewListCount" resultType="int">
+		select count(*)
+		from t_review
+		where deleted_yn = 'N'
+	</select>
+
+	<!-- 페이징 처리 -->
+	<select id="selectReviewList" parameterType="int"
+		resultType="hotel.dto.ReviewDto">
+		select review_idx, user_nickname, title, hit_cnt, review_star,
+		date_format(regist_dt, '%Y-%m-%d') as regist_dt
+		from t_review
+		where deleted_yn = 'N'
+		order by review_idx desc
+		limit #{offset}, 10
+	</select>
+
+	<!-- <insert id="insertReview" parameterType="hotel.dto.ReviewDto" > -->
+	<!-- insert into t_review (user_nickname, title, contents, regist_dt, review_star, 
+		check_in, check_out, review_image) -->
+	<!-- values (#{userNickname}, #{title}, #{contents}, now(), #{reviewStar}, 
+		now(), now(), #{reviewImage}) -->
+	<!-- </insert> -->
+
+	<insert id="insertReview" parameterType="hotel.dto.ReviewDto">
+		insert into t_review (user_nickname, title, contents, review_star,
+		regist_dt, review_image)
+		values (#{userNickname}, #{title}, #{contents}, #{reviewStar}, now(),
+		#{reviewImage})
+	</insert>
+
+
+
+	<update id="updateHitCount" parameterType="int">
+		update t_review
+		set hit_cnt = hit_cnt + 1
+		where review_idx = #{reviewIdx}
+	</update>
+
+
+	<!-- <select id="selectReviewDetail" parameterType="int" resultType="hotel.dto.ReviewDto"> -->
+	<!-- select review_idx, user_nickname, hit_cnt, title, contents, review_star, 
+		check_in, check_out, regist_dt, review_image -->
+	<!-- from t_review -->
+	<!-- where deleted_yn = 'N' and review_idx = #{reviewIdx} -->
+	<!-- </select> -->
+
+	<select id="selectReviewDetail" parameterType="int"
+		resultType="hotel.dto.ReviewDto">
+		select review_idx, user_nickname, hit_cnt, title, contents, review_star,
+		regist_dt, review_image
+		from t_review
+		where deleted_yn = 'N' and review_idx = #{reviewIdx}
+	</select>
+
+
+	<update id="updateReview" parameterType="hotel.dto.ReviewDto">
+		update t_review
+		set title = #{title},
+		contents = #{contents},
+		updated_dt = now(),
+		<!-- user_nickname = #{userNickname}, -->
+		review_star = #{reviewStar}
+		where review_idx = #{reviewIdx}
+	</update>
+
+	<update id="deleteReview" parameterType="int">
+		update t_review
+		set deleted_yn = 'Y',
+		updated_dt = now(),
+		user_nickname = #{userNickname}
+		where review_idx = #{reviewIdx}
+	</update>
+
+
+</mapper>

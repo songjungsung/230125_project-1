@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    
+    <!-- 별점을 출력하는 영역 -->
+    <div id="score"></div>
+    <input type="button" id="btn" value="확인" />
+
+    <script>
+        $(function() {
+            // score 만큼 별을 출력
+            function showStar(score) {
+                const MAX_SCORE = 5;
+                let star = '';
+                for (let i = 1; i <= score; i++) {
+                    star += `<i class="fa-solid fa-star" no="${i}""></i>`;
+                } 
+                for (let i = score + 1; i <= MAX_SCORE; i++) {
+                    star += `<i class="fa-regular fa-star" no="${i}"></i>`;
+                }
+                $('#score').html(별);
+            }
+            // 로딩 시 개수 만큼 별 출력
+            showStar(3);    
+
+            // score 변경 (별 선택 변경)
+            $('#score').on('click', 'i.fa-star', function() {
+                showStar(Number($(this).attr('no')));
+            });
+
+            // 선택된 별 갯수 출력
+            $('#btn').on('click', function() {
+                console.log($('.fa-solid').length); // 
+            });
+        });
+    </script>
+    
+</body>
+</html>

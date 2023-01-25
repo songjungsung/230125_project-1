@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hotel.mapper.AskMapper">
+<!-- <select id="selectAskList" resultType="hotel.dto.AskDto">
+		select ask_idx, title, hit_cnt, regist_id,
+		date_format(regist_dt, '%Y-%m-%d %H:%i:%s') as regist_dt
+		from t_ask
+		where deleted_yn = 'N'
+		order by ask_idx desc
+	</select> -->
+
+	<!-- 검색 조건과 일치하는 게시물 개수를 조회 -->
+	<select id="selectAskListCount" resultType="int">
+		select count(*)
+		  from t_ask
+		 where deleted_yn = 'N'
+	</select> 
+
+	<!-- 페이징 처리 -->
+	<select id="selectAskList" parameterType="int" resultType="hotel.dto.AskDto">
+		select ask_idx, title, hit_cnt, regist_id,
+		       date_format(regist_dt, '%Y-%m-%d') as regist_dt
+		  from t_ask
+		 where deleted_yn = 'N'		 
+	  order by ask_idx desc
+	     limit #{offset}, 10
+	</select> 
+
+	<insert id="insertAsk" parameterType="hotel.dto.AskDto">
+		insert into t_ask (title, contents, regist_dt, regist_id)
+		values ( #{title}, #{contents}, now(), #{registId} )
+	</insert>
+
+
+	<update id="updateHitCount" parameterType="int">
+		update t_ask
+		set hit_cnt = hit_cnt + 1
+		where ask_idx = #{askIdx}
+	</update>
+
+
+<!-- <select id="selectAskDetail" parameterType="int"
+		resultType="hotel.dto.AskDto">
+		select ask_idx, title, contents, hit_cnt,
+		date_format(regist_dt, '%Y-%m-%d %H:%i:%s') as regist_dt, regist_id
+		from t_ask
+		where deleted_yn = 'N' and ask_idx = #{askIdx}
+	</select>  -->
+
+	<update id="updateAsk" parameterType="hotel.dto.AskDto">
+		update t_ask
+		set title = #{title},
+		contents = #{contents},
+		updated_dt = now(),
+		updated_id = 'admin'
+		where ask_idx = #{askIdx}
+	</update>
+
+	<delete id="deleteAsk" parameterType="int">
+		update t_ask
+		set deleted_yn = 'Y',
+		updated_dt = now(),
+		updated_id = 'admin'
+		where ask_idx = #{askIdx}
+	</delete>
+
+
+</mapper>
